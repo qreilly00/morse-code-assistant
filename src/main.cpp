@@ -3,6 +3,7 @@
 #include "TimeUtil.hpp"
 
 int getRandomInt(int x, int y);
+void audioEvent(sf::Sound& sound, sf::SoundBuffer& buffer, int& currentLetter);
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
@@ -12,10 +13,10 @@ int main() {
     shape.setFillColor(sf::Color::Yellow);
 
     TimeUtil tu;
-    int totalTime = 0;
     tu.setTime();
 
     int currentLetter = 0;
+    int totalTime = 0;
     bool response = 1;
 
     sf::Sound sound;
@@ -27,25 +28,10 @@ int main() {
 
         if(totalTime >= 2000) {
             if(response == 1) {
-                currentLetter = getRandomInt(1, 26);
-
-                char bffrTmp = (char)currentLetter + '`';
-                std::ostringstream out;
-                out << "../aux/morsecode-snips-2/" << bffrTmp << ".wav";
-
-                std::cout << out.str() << std::endl;
-
-                if (!buffer.loadFromFile(out.str()))
-                    return -1;
-
-                sound.setBuffer(buffer);
-                sound.play();
-
+                audioEvent(sound, buffer, currentLetter);
                 shape.setFillColor(sf::Color::Yellow);
-
                 response = 0;
             }
-
             totalTime = 0;
         }
 
@@ -55,7 +41,6 @@ int main() {
                 window.close();
 
             if(event.type == sf::Event::TextEntered) {
-                //bool correctAnswer = 0;
                 if(event.text.unicode == currentLetter + 96) {
                     response = 1;
                     shape.setFillColor(sf::Color::Green);
@@ -75,6 +60,22 @@ int main() {
 
     // Exit program.
     return 0;
+}
+
+void audioEvent(sf::Sound& sound, sf::SoundBuffer& buffer, int& currentLetter) {
+    currentLetter = getRandomInt(1, 26);
+
+    char bffrTmp = (char)currentLetter + '`';
+    std::ostringstream out;
+    out << "../aux/morsecode-snips-2/" << bffrTmp << ".wav";
+
+    std::cout << out.str() << std::endl;
+
+    if (!buffer.loadFromFile(out.str()))
+        std::exit(-1);
+
+    sound.setBuffer(buffer);
+    sound.play();
 }
 
 int getRandomInt(int x, int y) {
