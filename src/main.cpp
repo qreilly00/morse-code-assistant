@@ -16,7 +16,7 @@ int main() {
     tu.setTime();
 
     int currentLetter = 0;
-    int totalTime = 0;
+    int totalTime = 2000;
     bool response = 1;
 
     sf::Sound sound;
